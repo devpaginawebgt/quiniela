@@ -1,3 +1,0 @@
-Se agregaron campos de usuario 
-
-Se agregó campo estado en tabla partidos
