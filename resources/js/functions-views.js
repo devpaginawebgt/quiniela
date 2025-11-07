@@ -5,26 +5,30 @@ const slideToggle = (id) => {
     contenidoSeleccion.classList.toggle('hidden');
 }
 
+window.slideToggle = slideToggle;
+
 const increaseBookmar = (btn) => {
     let marcador = btn.parentElement.parentElement.querySelector('.marcador-equipo');
     marcador.value++;
 }
 
+window.increaseBookmar = increaseBookmar;
+
 const decreaseBookmar = (btn) => {
     let marcador = btn.parentElement.parentElement.querySelector('.marcador-equipo');
     (marcador.value > 0 ? marcador.value-- : marcador = marcador);
-    console.log(marcador.value)
 }
+
+window.decreaseBookmar = decreaseBookmar;
 
 
 const obtenerUsuariosParticipantes = async () => {
     const options = {method: 'GET'};
 
-    let datos = await fetch(`http://127.0.0.1:8000/api/obtener-tabla-participantes/${user_id.value}`, options)
+    let datos = await fetch(`/api/obtener-tabla-participantes/${user_id.value}`, options)
       .then(response => {return response.json()})
       .catch(err => console.error(err));
 
-    console.log(datos);
     return datos;
 }
 
@@ -43,7 +47,6 @@ const guardarMarcadoresPartidos = async (user_id) => {
     });
 
     let responseSavePrediccions = await enviarPrediccionesPartidos(user_id,partidosAGuardar);
-    console.log(responseSavePrediccions);
     if(responseSavePrediccions == "1OK"){
         savedAlert('Listo!','Se guardaron tus marcadores.','success');
     }else{

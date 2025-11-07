@@ -2,17 +2,16 @@ const getEquiposGrupo = async (grupo) => {
 
     const options = { method: 'GET' };
 
-    let datos = await fetch(`http://127.0.0.1:8000/api/ver-grupo/${grupo}`, options)
+    let datos = await fetch(`/api/ver-grupo/${grupo}`, options)
 
         .then(response => response.json())
 
         .then(data => { return data })
 
-        .catch(err => console.error(err));
+        .catch(console.error);
 
 
 
-    console.log(datos);
 
     return datos;
 
@@ -26,23 +25,20 @@ const getPartidosGruposJornadas = async (grupo, jornada) => {
 
 
 
-    let datos = await fetch('http://127.0.0.1:8000/api/partidos-grupo/', options)
+    let datos = await fetch('/api/partidos-grupo/', options)
 
         .then(response => response.json())
 
         .then(data => { return data })
 
-        .catch(err => console.error(err));
+        .catch(console.error);
 
 
 
-    console.log(datos);
 
     return datos;
 
 }
-
-
 
 
 
@@ -93,8 +89,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
 
+    const spinnerLoad = document.querySelector(".spinner-load");
 
-    document.querySelector(".spinner-load").classList.toggle('hidden');
+    if (spinnerLoad) {
+        spinnerLoad.classList.toggle('hidden');
+    }
 
 });
 
@@ -102,7 +101,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 const verEquiposGrupo = async (element) => {
 
-    document.querySelector(".spinner-load").classList.toggle('hidden');
+    const spinnerLoad = document.querySelector(".spinner-load");
+    
+    if (spinnerLoad) {
+        spinnerLoad.classList.toggle('hidden');
+    }
 
     let equipos = await getEquiposGrupo(element.value);
 
@@ -112,9 +115,14 @@ const verEquiposGrupo = async (element) => {
 
     pintarJornadas(element.value);
 
-    document.querySelector(".spinner-load").classList.toggle('hidden');
+    if (spinnerLoad) {
+        spinnerLoad.classList.toggle('hidden');
+    }
 
 }
+
+window.verEquiposGrupo = verEquiposGrupo;
+
 
 
 
@@ -158,7 +166,7 @@ const pintarTablaEquipos = (equipos) => {
 
         <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap flex items-center justify-between">
 
-            <img src="../images/selecciones/${element.imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
+            <img src="/images/selecciones/${element.imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
 
             ${element.nombre}
 
@@ -248,7 +256,7 @@ const pintarPartidosJornada = (equipos, jornadaAPintar) => {
 
             <div class="w-1/2 flex-col lg:flex-row xl:w-1/4 flex items-center justify-between">
 
-                <img src="../images/selecciones/${element[0].imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
+                <img src="/images/selecciones/${element[0].imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
 
                 <p class="font-semibold">${element[0].nombre}</p>
 
@@ -264,7 +272,7 @@ const pintarPartidosJornada = (equipos, jornadaAPintar) => {
 
             <div class="w-1/2 flex-col lg:flex-row xl:w-1/4 flex items-center justify-between">
 
-                <img src="../images/selecciones/${element[1].imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
+                <img src="/images/selecciones/${element[1].imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
 
                 <p class="font-semibold">${element[1].nombre}</p>
 
@@ -276,7 +284,7 @@ const pintarPartidosJornada = (equipos, jornadaAPintar) => {
 
         } else {
 
-            console.log('no coinciden');
+            
 
         }
 
@@ -286,7 +294,6 @@ const pintarPartidosJornada = (equipos, jornadaAPintar) => {
 
     espacioJornada.innerHTML = rowPartidos;
 
-    console.log(rowPartidos);
 
 }
 
@@ -300,13 +307,13 @@ const getPartidosJornadaGeneral = async (jornada) => {
 
     const options = { method: 'GET' };
 
-    let datos = await fetch(`http://127.0.0.1:8000/api/partidos-jornada/${jornada}`, options)
+    let datos = await fetch(`/api/partidos-jornada/${jornada}`, options)
 
         .then(response => response.json())
 
         .then(data => { return data })
 
-        .catch(err => console.error(err));
+        .catch(console.error);
 
 
 
@@ -346,7 +353,7 @@ const pintarPartidosJornadaGeneral = (equipos) => {
 
             <div class="w-1/2 flex-col lg:flex-row xl:w-1/4 flex items-center justify-between">
 
-                <img src="../images/selecciones/${element[0].imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
+                <img src="/images/selecciones/${element[0].imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
 
                 <p class="font-semibold">${element[0].nombre}</p>
 
@@ -362,7 +369,7 @@ const pintarPartidosJornadaGeneral = (equipos) => {
 
             <div class="w-1/2 flex-col lg:flex-row xl:w-1/4 flex items-center justify-between">
 
-                <img src="../images/selecciones/${element[1].imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
+                <img src="/images/selecciones/${element[1].imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
 
                 <p class="font-semibold">${element[1].nombre}</p>
 
@@ -374,7 +381,7 @@ const pintarPartidosJornadaGeneral = (equipos) => {
 
         } else {
 
-            console.log('no coinciden');
+            
 
         }
 
@@ -390,16 +397,23 @@ const pintarPartidosJornadaGeneral = (equipos) => {
 
 const verPartidosJornada = async (element) => {
 
-    document.querySelector(".spinner-load").classList.toggle('hidden');
+    const spinnerLoad = document.querySelector(".spinner-load");
+    
+    if (spinnerLoad) {
+        spinnerLoad.classList.toggle('hidden');
+    }
 
     let equiposJornada = await getPartidosJornadaGeneral(element.value);
 
     pintarPartidosJornadaGeneral(equiposJornada);
 
-    document.querySelector(".spinner-load").classList.toggle('hidden');
+    if (spinnerLoad) {
+        spinnerLoad.classList.toggle('hidden');
+    }
 
 }
 
+window.verPartidosJornada = verPartidosJornada;
 
 
 /**************QUINIELA SELECT */
@@ -440,7 +454,7 @@ const pintarPartidosJornadaQuiniela = (equipos) => {
 
                 <div class="flex flex-col justify-center items-center xl:flex-row w-1/3 md:w-auto ml-2">
 
-                    <img src="../images/selecciones/${element[0].imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
+                    <img src="/images/selecciones/${element[0].imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
 
                     <p class="font-semibold text-xs xs:text-md lg:text-xl m-4">${element[0].nombre}</p>
 
@@ -532,7 +546,7 @@ const pintarPartidosJornadaQuiniela = (equipos) => {
 
                     <p class="font-semibold text-xs xs:text-md lg:text-xl m-4">${element[1].nombre}</p>
 
-                    <img src="../images/selecciones/${element[1].imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
+                    <img src="/images/selecciones/${element[1].imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
 
                 </div>
 
@@ -544,7 +558,6 @@ const pintarPartidosJornadaQuiniela = (equipos) => {
 
         } else {
 
-            console.log('no coinciden');
 
         }
 
@@ -590,6 +603,8 @@ const verPartidosJornadaQuiniela = async (element, user_id) => {
 
 }
 
+window.verPartidosJornadaQuiniela = verPartidosJornadaQuiniela;
+
 
 
 const partidoJugado = (fecha_partido,estado) => {
@@ -633,7 +648,6 @@ const partidoJugado = (fecha_partido,estado) => {
 const pintarParticipantes = (usuariosParticipantes) => {
 
     let tablaParticipantes = document.querySelector('#body-participantes-quiniela');
-    console.log(usuariosParticipantes);
 
     let rowParticipantes = [];
 
