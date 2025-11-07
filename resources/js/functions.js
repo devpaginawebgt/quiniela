@@ -1,17 +1,8 @@
 const getEquiposGrupo = async (grupo) => {
 
-    const options = { method: 'GET' };
-
-    let datos = await fetch(`/api/ver-grupo/${grupo}`, options)
-
-        .then(response => response.json())
-
-        .then(data => { return data })
-
+    let datos = await axios.get(`/ver-grupo/${grupo}`)
+        .then(data => data.data)
         .catch(console.error);
-
-
-
 
     return datos;
 
@@ -21,20 +12,11 @@ const getEquiposGrupo = async (grupo) => {
 
 const getPartidosGruposJornadas = async (grupo, jornada) => {
 
-    const options = { headers: { 'Content-Type': 'application/json' }, method: 'PUT', body: JSON.stringify({ 'grupo': grupo, 'jornada': jornada }) };
+    const body = { 'grupo': grupo, 'jornada': jornada };
 
-
-
-    let datos = await fetch('/api/partidos-grupo/', options)
-
-        .then(response => response.json())
-
-        .then(data => { return data })
-
+    let datos = await axios.post('/partidos-grupo/', body)
+        .then(data => data.data)
         .catch(console.error);
-
-
-
 
     return datos;
 
@@ -305,17 +287,9 @@ const pintarPartidosJornada = (equipos, jornadaAPintar) => {
 
 const getPartidosJornadaGeneral = async (jornada) => {
 
-    const options = { method: 'GET' };
-
-    let datos = await fetch(`/api/partidos-jornada/${jornada}`, options)
-
-        .then(response => response.json())
-
-        .then(data => { return data })
-
+    let datos = await axios.get(`/partidos-jornada/${jornada}`)
+        .then(data => data.data)
         .catch(console.error);
-
-
 
     return datos;
 

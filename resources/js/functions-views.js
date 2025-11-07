@@ -23,11 +23,10 @@ window.decreaseBookmar = decreaseBookmar;
 
 
 const obtenerUsuariosParticipantes = async () => {
-    const options = {method: 'GET'};
 
-    let datos = await fetch(`/api/obtener-tabla-participantes/${user_id.value}`, options)
-      .then(response => {return response.json()})
-      .catch(err => console.error(err));
+    let datos = await axios.get(`/obtener-tabla-participantes/${user_id.value}`)
+      .then(data => data.data)
+      .catch(console.error);
 
     return datos;
 }
