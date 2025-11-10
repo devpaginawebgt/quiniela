@@ -26,7 +26,7 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('codigo_id');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->integer('status_user')->default(0);
+            $table->integer('status_user')->default(1);
             $table->rememberToken();
             $table->timestamps();
 
