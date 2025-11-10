@@ -9,6 +9,20 @@ class Equipo extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'nombre',
+        'imagen',
+        'descripcion',
+        'grupo',
+        'goles_favor',
+        'goles_contra',
+        'partidos_jugados',
+        'partidos_ganados',
+        'partidos_perdidos',
+        'partidos_empatados',
+        'puntos',
+    ];
+
     public function partidos($jornada)
     {
         return $this->belongsToMany(Partido::class,'equipo_partidos');
