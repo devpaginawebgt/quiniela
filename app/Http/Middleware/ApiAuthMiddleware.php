@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\ApiException;
+use App\Traits\ApiResponse;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,6 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApiAuthMiddleware
 {
+    use ApiResponse;
+
     /**
      * Handle an incoming request.
      *
@@ -19,7 +22,7 @@ class ApiAuthMiddleware
     {
         if ( !$request->expectsJson() ) {
             
-            throw ApiException::notAcceptable("The 'Accept' header must include 'application/json'");
+            return $this->errorResponse("The 'Accept' header must include 'application/json'", 406);
 
         }
 
@@ -27,13 +30,13 @@ class ApiAuthMiddleware
 
         if ( empty($apiKey) ) {
 
-            throw ApiException::unauthorized();
+            return $this->errorResponse('No tienes permiso para acceder a este recurso', 401);
 
         }
 
         if ( $apiKey !== env('API_KEY') ) {
 
-            throw ApiException::unauthorized();
+            return $this->errorResponse('No tienes permiso para acceder a este recurso', 401);
 
         }
 
