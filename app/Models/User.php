@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -11,6 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+    
     public $timestamps = true;
 
     /**
@@ -23,11 +25,13 @@ class User extends Authenticatable
         'nombres',
         'apellidos',
         'numero_documento',
-        'email',
         'telefono',
-        'codigo_id',
         'pais_id',
-        'password'
+        'email',
+        'puntos',
+        'codigo_id',
+        'email_verified_at',
+        'status_user'
     ];
 
     /**
@@ -48,4 +52,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    
+
+    public function codigo() : BelongsTo
+    {
+        return $this->belongsTo(Codigo::class, 'codigo_id');
+    }
 }
