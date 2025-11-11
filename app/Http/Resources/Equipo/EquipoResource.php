@@ -15,16 +15,17 @@ class EquipoResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'nombre' => $this->nombre,
             'imagen' => $this->imagen,
             'descripcion' => $this->descripcion,
             'grupo' => $this->grupo,
-            'goles_favor' => $this->goles_favor,
-            'goles_contra' => $this->goles_contra,
-            'partidos_jugados' => $this->partidos_jugados,
-            'partidos_ganados' => $this->partidos_ganados,
-            'partidos_perdidos' => $this->partidos_perdidos,
-            'partidos_empatados' => $this->partidos_empatados,
+            'golesFavor' => $this->goles_favor,
+            'golesContra' => $this->goles_contra,
+            'partidosJugados' => $this->partidos_jugados,
+            'partidosGanados' => $this->partidos_ganados,
+            'partidosPerdidos' => $this->partidos_perdidos,
+            'partidosEmpatados' => $this->partidos_empatados,
             'puntos' => $this->puntos,
         ];
     }
