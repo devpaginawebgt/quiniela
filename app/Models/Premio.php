@@ -8,5 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Premio extends Model
 {
     use HasFactory;
+
     public $timestamps = true;
+
+    protected $fillable = [
+        'nombre',
+        'descripcion',
+        'imagen',
+        'posicion',
+        'pais_id',
+    ];
+
+    
 }

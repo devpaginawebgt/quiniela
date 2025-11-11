@@ -43,7 +43,7 @@
                                 {{$premio->descripcion}}
                             </td>
                             <td class="py-4 px-6">
-                                <img src="{{asset('images/premios')}}/{{$premio->imagen}}" class="w-20 h-16 rounded">
+                                <img src="{{ asset($premio->imagen) }}" class="w-20 h-16 rounded">
                             </td>
                         </tr>
                         @endforeach
