@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Codigo;
 use Illuminate\Database\Seeder;
 
 class CodigoSeeder extends Seeder
@@ -13,6 +14,8 @@ class CodigoSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Codigo::factory(10)->create();
+        Codigo::factory(1)->state(['estado' => 1])->create();
+
+        Codigo::factory(10)->create();
     }
 }
