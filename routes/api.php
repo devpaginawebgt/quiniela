@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\ApiAuthController;
 use App\Http\Controllers\EquipoController;
+use App\Http\Controllers\EstadioController;
 use App\Http\Controllers\PartidoController;
 use App\Http\Controllers\SeleccionController;
 use App\Http\Controllers\ResultadoPartidoController;
@@ -18,11 +19,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// middleware('auth:sanctum')
+// Auth
 
 Route::controller(ApiAuthController::class)->group(function() {
     Route::get('login', 'login');
 });
+
+// Equipos y grupos
 
 Route::controller(EquipoController::class)->group(function() {
     Route::get('equipos', 'getEquipos');
@@ -30,8 +33,18 @@ Route::controller(EquipoController::class)->group(function() {
     Route::get('grupo/{grupo}', 'getPartidosGrupo');
 });
 
+// Partidos
+
 Route::controller(PartidoController::class)->group(function() {
     Route::get('jornadas', 'getJornadas');
     Route::get('jornada/{jornada}', 'getPartidosJornada');
 });
+
+// Estadios
+
+Route::controller(EstadioController::class)->group(function() {
+    Route::get('estadios', 'getEstadios');
+});
+
+
 
