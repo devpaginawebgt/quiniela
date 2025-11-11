@@ -40,6 +40,8 @@ class ApiAuthController extends Controller
 
         }
 
+        $user->pais = $this->userService->getPais($user->pais_id);
+
         $user = new UserResource($user);
 
         return $this->successResponse($user);
