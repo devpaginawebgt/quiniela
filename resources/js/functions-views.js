@@ -31,6 +31,8 @@ const obtenerUsuariosParticipantes = async () => {
     return datos;
 }
 
+window.obtenerUsuariosParticipantes = obtenerUsuariosParticipantes;
+
 const guardarMarcadoresPartidos = async (user_id) => {
     let partidosAGuardar = [];
     let contenedoresPartidos = document.querySelectorAll(".partido-modulo-pronosticos");

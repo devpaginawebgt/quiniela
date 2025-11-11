@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } catch (error) {
 
-
+        console.error(error);
 
     }
 
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } catch (error) {
 
-
+        console.error(error);
 
     }
 
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } catch (error) {
 
-
+        console.error(error);
 
     }
 
