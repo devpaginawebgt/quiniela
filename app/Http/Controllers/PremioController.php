@@ -2,12 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Premio\PremioResource;
+use App\Http\Services\PremioService;
+use App\Http\Services\UserService;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class PremioController extends Controller
 {   
+    use ApiResponse;
+
+    public function __construct(
+        private readonly UserService $userService,
+        private readonly PremioService $premioService,
+    ) {}
+
     public function verTablaPremios()
     {
         
@@ -25,6 +36,31 @@ class PremioController extends Controller
         return view('modulos.tabla-premios', [
             'premios' => $premios
         ]);
+
+    }
+
+    // API Responses
+
+    public function getPremios(Request $request)
+    {
+
+        $id_pais = $request->input('pais') ?? 1;
+
+        $pais = $this->userService->getPais($id_pais);
+
+        if ( empty($pais) ) {
+
+            return $this->errorResponse('No se encontró el país', 422);
+
+        }
+
+        $id_pais = (int)$id_pais;
+
+        $premios = $this->premioService->getPremios($id_pais);
+
+        $premios = PremioResource::collection($premios);
+
+        return $this->successResponse($premios);
 
     }
 

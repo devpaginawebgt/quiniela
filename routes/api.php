@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\ApiAuthController;
 use App\Http\Controllers\EquipoController;
 use App\Http\Controllers\EstadioController;
 use App\Http\Controllers\PartidoController;
+use App\Http\Controllers\PremioController;
 use App\Http\Controllers\SeleccionController;
 use App\Http\Controllers\ResultadoPartidoController;
 use App\Http\Controllers\UserController;
@@ -52,6 +53,12 @@ Route::controller(EstadioController::class)->group(function() {
 Route::controller(UserController::class)->group(function() {
     Route::get('participantes', 'getParticipantes');
     Route::get('ranking', 'getRanking');
+});
+
+// Premios
+
+Route::controller(PremioController::class)->group(function() {
+    Route::get('premios', 'getPremios');
 });
 
 
