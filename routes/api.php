@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 // Auth
 
 Route::controller(ApiAuthController::class)->group(function() {
-    Route::get('login', 'login');
+    Route::post('login', 'login');
 });
 
 // Equipos y grupos
