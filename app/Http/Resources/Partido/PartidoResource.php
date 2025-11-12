@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Partido;
 
+use App\Http\Resources\Equipo\EquipoPartidoResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,14 +16,12 @@ class PartidoResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->partido->id,
-            'fase' => $this->partido->fase,
-            'jornada' => $this->partido->jornada,
+            'id' => $this->partido->id,            
             'fechaPartido' => $this->partido->fecha_partido,
-            'jugado' => $this->partido->jugado == 1 ? 'Si' : 'No',
+            'jugado' => $this->partido->jugado === 1,
 
-            'equipoUno' => $this->equipoUno,
-            'equipoDos' => $this->equipoDos,
+            'equipoUno' => new EquipoPartidoResource($this->equipoUno),
+            'equipoDos' => new EquipoPartidoResource($this->equipoDos),
         ];
     }
 }
