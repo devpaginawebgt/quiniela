@@ -23,12 +23,13 @@ use Illuminate\Http\Request;
 
 /****** RUTAS GET PARA OBTENER VISTAS DE MODULOS */
 
+Route::redirect('/', '/login');
+
 Route::middleware(['auth'])->group(function() {
 
     // Home
 
     Route::controller(HomeController::class)->group(function() {
-        Route::redirect('/', '/dashboard');
         Route::get('/dashboard', 'dashboard')->name('dashboard');
     });
 
@@ -81,8 +82,6 @@ Route::middleware(['auth'])->group(function() {
 });
 
 Route::middleware(['guest'])->group(function() {
-
-    Route::redirect('/', '/login');
 
     // Participantes inscritos
 
