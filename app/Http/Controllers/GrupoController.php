@@ -50,7 +50,7 @@ class GrupoController extends Controller
 
         $data['equipos'] = EquipoGrupoResource::collection($equipos);
 
-        $data['partidos'] = $this->partidoService->getPartidosGrupo($get_grupo);
+        $data['jornadas'] = $this->partidoService->getPartidosGrupo($get_grupo);
 
         return $this->successResponse($data);
     }
