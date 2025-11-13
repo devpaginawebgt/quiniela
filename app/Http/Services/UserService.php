@@ -36,7 +36,7 @@ class UserService {
         return $pais['nombre'];
     }
 
-    public function getParticipantes()
+    public function getUsers()
     {
 
         $participantes = User::where('status_user', 1)->get();

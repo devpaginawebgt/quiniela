@@ -20,7 +20,7 @@ class UserController extends Controller
     public function verParticipantes()
     {
 
-        $participantes = $this->userService->getParticipantes();
+        $participantes = $this->userService->getUsers();
 
         return view('modulos.participantes', [
             'participantes' => $participantes
@@ -30,10 +30,10 @@ class UserController extends Controller
 
     // API responses
 
-    public function getParticipantes()
+    public function getUsers()
     {
 
-        $participantes = $this->userService->getParticipantes();
+        $participantes = $this->userService->getUsers();
 
         $participantes = UserResource::collection($participantes);
 
