@@ -19,7 +19,7 @@ class PartidoResource extends JsonResource
 
         switch($this->partido->estado) {
             case 1:
-                $estado = 'Partido terminado';
+                $estado = 'Partido finalizado';
                 break;
             case 2:
                 $estado = '¡Partido en curso!';
