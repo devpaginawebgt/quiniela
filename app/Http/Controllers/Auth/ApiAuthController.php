@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ApiLoginRequest;
-use App\Http\Resources\User\UserAuthResource;
+use App\Http\Resources\User\UserResource;
 use App\Http\Services\UserService;
 use App\Traits\ApiResponse;
 use Illuminate\Support\Facades\Hash;
@@ -39,13 +39,14 @@ class ApiAuthController extends Controller
 
         }
 
-        $token = $user->createToken('mobile-app');
-
-        $user->token = $token->plainTextToken;
+        $token = $user->createToken('mobile-app')->plainTextToken;
         
-        $user = new UserAuthResource($user);
+        $user = new UserResource($user);
 
-        return $this->successResponse($user);
+        return $this->successResponse([
+            'token' => $token,
+            'user' => $user,
+        ]);
     }
 
     public function logout(Request $request)
