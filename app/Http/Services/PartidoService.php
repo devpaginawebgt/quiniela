@@ -6,6 +6,8 @@ use App\Http\Resources\Partido\PartidoResource;
 use App\Models\Equipo;
 use App\Models\EquipoPartido;
 use App\Models\Partido;
+use App\Models\ResultadoPartido;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +42,7 @@ class PartidoService {
 
         $partidos = EquipoPartido::select('id', 'equipo_1', 'equipo_2', 'partido_id')
             ->with([
-                'partido:id,fase,jornada,fecha_partido,jugado',
+                'partido:id,fase,jornada,fecha_partido,jugado,estado',
                 'equipoUno:id,nombre,imagen,grupo',
                 'equipoDos:id,nombre,imagen,grupo'
             ])
@@ -61,7 +63,7 @@ class PartidoService {
 
         $jornadaUno = EquipoPartido::select('id', 'equipo_1', 'equipo_2', 'partido_id')
             ->with([
-                'partido:id,fase,jornada,fecha_partido,jugado',
+                'partido:id,fase,jornada,fecha_partido,jugado,estado',
                 'equipoUno:id,nombre,imagen,grupo',
                 'equipoDos:id,nombre,imagen,grupo'
             ])
@@ -84,7 +86,7 @@ class PartidoService {
 
         $jornadaDos = EquipoPartido::select('id', 'equipo_1', 'equipo_2', 'partido_id')
             ->with([
-                'partido:id,fase,jornada,fecha_partido,jugado',
+                'partido:id,fase,jornada,fecha_partido,jugado,estado',
                 'equipoUno:id,nombre,imagen,grupo',
                 'equipoDos:id,nombre,imagen,grupo'
             ])
@@ -107,7 +109,7 @@ class PartidoService {
 
         $jornadaTres = EquipoPartido::select('id', 'equipo_1', 'equipo_2', 'partido_id')
             ->with([
-                'partido:id,fase,jornada,fecha_partido,jugado',
+                'partido:id,fase,jornada,fecha_partido,jugado,estado',
                 'equipoUno:id,nombre,imagen,grupo',
                 'equipoDos:id,nombre,imagen,grupo'
             ])
@@ -131,48 +133,36 @@ class PartidoService {
 
     // Actualizar el estado de los partidos, si la hora ya ha pasado
 
-    public function actualizarEstadoPartidos()
+    public function actualizarPartidosPasados()
     {
 
-        $fecha_hoy = date('Y-m-d');
+        return Partido::select('id', 'fecha_partido', 'estado')
+            ->whereDate('fecha_partido', Carbon::today())
+            ->where('fecha_partido', '<', Carbon::now())
+            ->where('estado', 0)
+            ->update(['estado' => 2]);
 
-        $partidos = DB::select(
-            "SELECT 
-                id,
-                fecha_partido 
-            FROM 
-                partidos 
-            WHERE 
-                fecha_partido LIKE '%$fecha_hoy%' 
-            AND 
-                estado = 0"
-        );
-
-        $fecha_actual = new DateTime('now');
-
-        foreach ($partidos as $partido) {
-
-            $fecha_partido = new DateTime($partido->fecha_partido);
-
-            $diff = $fecha_actual->diff($fecha_partido);            
-
-            if ($diff->format('%R') == "-") {
-
-                $partidoJugado = Partido::find($partido->id);
-
-                $partidoJugado->estado = 2;
-
-                $partidoJugado->save();
-
-            }
-
-        }
     }
 
     // Actualizar los puntos de los equipos cuyo estado de partido no sea 1 (puntos actualizados)
 
     public function actualizarPuntosEquipos()
     {
+
+        // $partidosJugados = EquipoPartido::select('id', 'equipo_1', 'equipo_2', 'partido_id')
+        //     ->with([
+        //         'partido:id,estado',
+        //         'equipoUno:id,nombre',
+        //         'equipoDos:id,nombre',
+        //         'resultado:id,partido_id,goles_equipo_1,goles_equipo_2',
+        //     ])
+        //     ->has('equipoUno')
+        //     ->has('equipoDos')
+        //     ->has('resultado')
+        //     ->whereHas('partido', function(Builder $query) {
+        //         $query->whereNot('estado', 1);
+        //     })
+        //     ->get();
 
         $resultados = DB::select(
             "SELECT 
@@ -190,6 +180,23 @@ class PartidoService {
             WHERE 
                 par.estado != 1"
         );
+
+        // foreach ($partidosJugados as $partido) {
+
+        //     $equipo1 = $partido->equipoUno;
+        //     $equipo2 = $partido->equipoDos;
+
+        //     $goles_e1 = $partido->resultado->goles_equipo_1;
+        //     $goles_e2 = $partido->resultado->goles_equipo_2;
+
+        //     // Actualizar valores
+
+        //     $equipo1->goles_favor += $goles_e1;
+        //     $equipo1->goles_contra += $goles_e2;
+
+        // }
+
+        // return;
 
         foreach ($resultados as $resultado) {
 
