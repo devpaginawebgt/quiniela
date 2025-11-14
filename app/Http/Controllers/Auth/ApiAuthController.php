@@ -53,13 +53,13 @@ class ApiAuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return $this->successResponse(['mensaje' => 'Sesión cerrada correctamente.']);
+        return $this->successResponse(['message' => 'Sesión cerrada correctamente.']);
     }
 
     public function logoutAll(Request $request)
     {
         $request->user()->tokens()->delete();
 
-        return $this->successResponse(['mensaje' => 'Se ha cerrado sesión en todos los dispositivos.']);
+        return $this->successResponse(['message' => 'Se ha cerrado sesión en todos los dispositivos.']);
     }
 }
