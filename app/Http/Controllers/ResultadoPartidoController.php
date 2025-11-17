@@ -109,14 +109,41 @@ class ResultadoPartidoController extends Controller
 
     public function savePredicciones(PrediccionRequest $request)
     {
+        // Actualizar los estados de los partidos cuya hora ya pasó
 
-        $predicciones = $request->predicciones;
+        $this->partidoService->actualizarPartidosPasados();
+        
+        // Actualizar los puntos de los equipos cuyo estado partido no es 1 (Actualizado)
+
+        $this->partidoService->actualizarPuntosEquipos();
+
+        // Actualizar puntos de usuario
 
         $user_id = $request->user()->id;
 
-        $partido_ids = $this->prediccionService->savePredicciones($predicciones, $user_id);
+        $this->prediccionService->actualizarPuntosParticipantes($user_id);
 
-        $equipos_partidos = $this->partidoService->getPartidosJornadaById($partido_ids);
+        // Validar predicciones
+
+        $predicciones = $request->predicciones;
+
+        $partido_ids = array_map(function($prediccion) {
+            return $prediccion['id_partido'];
+        }, $predicciones);
+
+        $resultado = $this->partidoService->getPartidosPredicciones($partido_ids);
+
+        if ($resultado['error'] === true) {
+
+            return $this->errorResponse($resultado['message'], 422);
+
+        }
+
+        $equipos_partidos = $resultado['equipos_partidos'];
+
+        // Guardar predicciones
+
+        $this->prediccionService->savePredicciones($predicciones, $user_id);
 
         $predicciones = $this->prediccionService->getPredicciones($equipos_partidos, $user_id);
 

@@ -78,7 +78,69 @@ class PartidoService {
 
     }
 
-    public function getPartidosJornadaById(Collection $partido_ids)
+    public function getPartidosPredicciones(array $partido_ids)
+    {
+        $equipos_partidos = EquipoPartido::select('id', 'equipo_1', 'equipo_2', 'partido_id')
+            ->has('equipoUno')
+            ->has('equipoDos')
+            ->whereHas('partido', function(Builder $query) use($partido_ids) {
+                $query->whereIn('id', $partido_ids);
+            })
+            ->with([
+                'partido:id,fase,jornada,fecha_partido,jugado,estado',
+                'equipoUno:id,nombre,imagen,grupo',
+                'equipoDos:id,nombre,imagen,grupo'
+            ])
+            ->get();
+
+        $error = false;
+        $message = '';
+
+        $equipos_partidos->each(function($equipos_partido) use( &$error, &$message ) {
+
+            if ($error === true) return;
+
+            $estado = $equipos_partido->partido->estado;
+
+            if ($estado === 1) {
+
+                $error = true;
+
+                $message = 'No se puede guardar la predicción: el partido ha finalizado.';
+
+            }
+
+            if ($estado === 2) {
+
+                $error = true;
+
+                $message = 'No se puede guardar la predicción: el partido está en juego.';
+
+            }
+
+            $fecha_partido = Carbon::parse($equipos_partido->partido->fecha_partido);
+
+            $fecha_actual = Carbon::now();
+
+            if ($fecha_actual->greaterThan($fecha_partido)) {
+
+                $error = true;
+
+                $message = 'No se puede guardar la predicción: la fecha del partido ya ha pasado.';
+
+            }
+
+        });
+
+        return [
+            'error' => $error,
+            'message' => $message,
+            'equipos_partidos' => $equipos_partidos
+        ];
+
+    }
+
+    public function getPartidosById(Collection $partido_ids)
     {
         
         $partido_ids = $partido_ids->toArray();

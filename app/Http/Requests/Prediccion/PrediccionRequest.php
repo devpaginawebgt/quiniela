@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Prediccion;
 
+use App\Http\Services\HelperService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PrediccionRequest extends FormRequest
@@ -24,26 +25,37 @@ class PrediccionRequest extends FormRequest
         return [
             'predicciones' => ['required', 'array', 'min:1', 'max:20'],
 
-            'predicciones.*.id_partido' => [
+            'predicciones.*.idPartido' => [
                 'required',
                 'integer',
                 'exists:partidos,id',
                 'distinct'
             ],
 
-            'predicciones.*.prediccion_equipo_uno' => [
+            'predicciones.*.prediccionEquipoUno' => [
                 'required',
                 'integer',
                 'min:0',
                 'max:25',
             ],
 
-            'predicciones.*.prediccion_equipo_dos' => [
+            'predicciones.*.prediccionEquipoDos' => [
                 'required',
                 'integer',
                 'min:0',
                 'max:25',
             ],
         ];
+    }
+
+    public function passedValidation()
+    {
+        $data = [];
+
+        foreach($this->predicciones as $record) {
+            $data[] = HelperService::CamelCaseToSnake($record);
+        }
+
+        $this->replace(['predicciones' => $data]);
     }
 }
