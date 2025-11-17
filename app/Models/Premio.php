@@ -14,7 +14,6 @@ class Premio extends Model
     protected $fillable = [
         'posicion',
         'titulo_posicion',
-        'color',
         'nombre',
         'descripcion',
         'imagen',

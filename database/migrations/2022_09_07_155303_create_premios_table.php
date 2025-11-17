@@ -17,7 +17,6 @@ class CreatePremiosTable extends Migration
             $table->id();
             $table->integer('posicion')->nullable();
             $table->string('titulo_posicion');
-            $table->string('color');
             $table->string('nombre');
             $table->string('imagen');
             $table->string('descripcion')->nullable();
