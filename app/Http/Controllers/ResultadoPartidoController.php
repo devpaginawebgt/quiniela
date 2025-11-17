@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Prediccion\PrediccionRequest;
 use App\Http\Resources\Prediccion\PrediccionResource;
+use App\Http\Resources\Resultado\ResultadoResource;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,19 +26,11 @@ class ResultadoPartidoController extends Controller
 
     public function verQuiniela($jornada = 1, $message = '0OK')
     {
-        // Actualizar los estados de los partidos cuya hora ya pasó
-
-        $this->partidoService->actualizarPartidosPasados();
-
-        // Actualizar los puntos de los equipos cuyo estado partido no es 1 (Actualizado)
-
-        $this->partidoService->actualizarPuntosEquipos();
-
-        // Actualizar los puntos del usuario
+        // Actualizar información general
 
         $user_id = Auth::user()->id;
 
-        $this->prediccionService->actualizarPuntosParticipantes($user_id);
+        $this->actualizacionDataGeneral($user_id);
 
         // Obtener información de las predicciones realizadas por el usuario
         
@@ -75,19 +68,11 @@ class ResultadoPartidoController extends Controller
 
         }
 
-        // Actualizar los estados de los partidos cuya hora ya pasó
-
-        $this->partidoService->actualizarPartidosPasados();
-        
-        // Actualizar los puntos de los equipos cuyo estado partido no es 1 (Actualizado)
-
-        $this->partidoService->actualizarPuntosEquipos();
-
-        // Actualizar puntos de usuario
+        // Actualizar información general
 
         $user_id = $request->user()->id;
 
-        $this->prediccionService->actualizarPuntosParticipantes($user_id);
+        $this->actualizacionDataGeneral($user_id);
 
         // Obtener los partidos de jornada
 
@@ -109,19 +94,11 @@ class ResultadoPartidoController extends Controller
 
     public function savePredicciones(PrediccionRequest $request)
     {
-        // Actualizar los estados de los partidos cuya hora ya pasó
-
-        $this->partidoService->actualizarPartidosPasados();
-        
-        // Actualizar los puntos de los equipos cuyo estado partido no es 1 (Actualizado)
-
-        $this->partidoService->actualizarPuntosEquipos();
-
-        // Actualizar puntos de usuario
+        // Actualizar información general
 
         $user_id = $request->user()->id;
 
-        $this->prediccionService->actualizarPuntosParticipantes($user_id);
+        $this->actualizacionDataGeneral($user_id);
 
         // Validar predicciones
 
@@ -150,6 +127,69 @@ class ResultadoPartidoController extends Controller
         $predicciones = PrediccionResource::collection($predicciones);
 
         return $this->successResponse($predicciones);
+
+    }
+
+    public function getResultados(Request $request, string $get_jornada)
+    {
+        // Validar que la jornada exista
+
+        $id_jornada = (int)$get_jornada;
+
+        if ( empty($id_jornada) ) {
+
+            return $this->errorResponse('No se encontró la jornada', 422);
+
+        }
+
+        // Validar que la jornada exista
+
+        $jornada = $this->partidoService->getJornada($id_jornada);
+
+        if ( empty($jornada) ) {
+
+            return $this->errorResponse('No se encontró la jornada', 422);
+
+        }
+
+        // Actualizar información general
+
+        $user_id = $request->user()->id;
+
+        $this->actualizacionDataGeneral($user_id);
+
+        // Obtener los partidos de jornada
+
+        $equipos_partidos = $this->partidoService->getPartidosFinalizados($id_jornada);
+
+        if (empty($equipos_partidos)) {
+
+            return $this->successResponse([]);
+
+        }
+
+        $resultados = $this->prediccionService->getResultados($equipos_partidos, $user_id);
+
+        $resultados = ResultadoResource::collection($resultados);
+
+        return $this->successResponse($resultados);
+
+    }
+
+    public function actualizacionDataGeneral(int $user_id)
+    {
+
+        // Actualizar los estados de los partidos cuya hora ya pasó
+
+        $this->partidoService->actualizarPartidosPasados();
+        
+        // Actualizar los puntos de los equipos cuyo estado partido no es 1 (Actualizado)
+
+        $this->partidoService->actualizarPuntosEquipos();
+
+        // Actualizar puntos de usuario
+
+        $this->prediccionService->actualizarPuntosParticipantes($user_id);
 
     }
 
@@ -336,8 +376,5 @@ class ResultadoPartidoController extends Controller
 
         return "10OK";
     }
-
-
-
-    
+        
 }

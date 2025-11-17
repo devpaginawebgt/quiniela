@@ -19,33 +19,32 @@ class PartidoSeeder extends Seeder
             [
                 'fase'      =>  'GRUPOS',
                 'jornada'   =>  1,
-                'fecha_partido' => Carbon::now()->subDays(1)->toDateTimeString(),
+                'fecha_partido' => Carbon::now()->subDays(1)->subHours(2)->toDateTimeString(),
                 'estadio_id'    => 1
             ],
-
             [
                 'fase'      =>  'GRUPOS',
                 'jornada'   =>  1, 
-                'fecha_partido' => Carbon::now()->subHours(2)->toDateTimeString(),
+                'fecha_partido' => Carbon::now()->subDays(1)->toDateTimeString(),
                 'estadio_id'    => 4
             ],
             [
                 'fase'      =>  'GRUPOS',
                 'jornada'   =>  1,
-                'fecha_partido' => Carbon::now()->subMinutes(2)->toDateTimeString(), 
+                'fecha_partido' => Carbon::now()->subHours(2)->toDateTimeString(), 
                 'estadio_id'    => 6
             ],
             [
                 'fase'      =>  'GRUPOS',
                 'jornada'   =>  1,
-                'fecha_partido' => Carbon::now()->addMinutes(2)->toDateTimeString(),
+                'fecha_partido' => Carbon::now()->subMinutes(2)->toDateTimeString() ,
                 'estadio_id'    => 2,
             ],
 
             [
                 'fase'      =>  'GRUPOS',
                 'jornada'   =>  1, 
-                'fecha_partido' => Carbon::now()->addMinutes(8)->toDateTimeString(),
+                'fecha_partido' => Carbon::now()->addMinutes(2)->toDateTimeString(),
                 'estadio_id'    => 7
             ],
             [

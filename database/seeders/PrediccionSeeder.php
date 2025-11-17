@@ -2,35 +2,41 @@
 
 namespace Database\Seeders;
 
-use App\Models\ResultadoPartido;
+use App\Models\Preccion;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ResultadoPartidoSeeder extends Seeder
+class PrediccionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $resultados = [
+        $predicciones = [
             [
+                'user_id' => 1,
                 'partido_id' => 1,
-                'goles_equipo_1' => 1,
+                'goles_equipo_1' => 2,
                 'goles_equipo_2' => 2,
-                'equipo_ganador_id' => 2,
             ],
             [
+                'user_id' => 1,
                 'partido_id' => 2,
                 'goles_equipo_1' => 2,
                 'goles_equipo_2' => 2,
-                'equipo_ganador_id' => null,
+            ],
+            [
+                'user_id' => 2,
+                'partido_id' => 1,
+                'goles_equipo_1' => 3,
+                'goles_equipo_2' => 1,
             ]
         ];
 
-        foreach($resultados as $resultado) {
+        foreach($predicciones as $prediccion) {
 
-            ResultadoPartido::create($resultado);
+            Preccion::create($prediccion);
 
         }
     }

@@ -257,7 +257,7 @@ class PrediccionService {
 
                 // Si no existe la predicción, la creamos
 
-                $prediccion_creada = Preccion::create([
+                Preccion::create([
                     'user_id' => $user_id,
                     'partido_id' => $prediccion['id_partido'],
                     'goles_equipo_1' => $prediccion['prediccion_equipo_uno'],
@@ -280,6 +280,105 @@ class PrediccionService {
         });
 
         return $id_partidos;
+
+    }
+
+    public function getResultadoPrediccion($prediccion, $resultado)
+    {
+
+        $pred_e_uno = $prediccion->goles_equipo_1;
+        $pred_e_dos = $prediccion->goles_equipo_2;
+
+        $res_e_uno = $resultado->goles_equipo_1;
+        $res_e_dos = $resultado->goles_equipo_2;
+
+        // Acertó en goles
+
+        $acerto_goles_uno = boolval($pred_e_uno === $res_e_uno);
+        $acerto_goles_dos = boolval($pred_e_dos === $res_e_dos);
+
+        $acerto_marcadores = boolval($acerto_goles_uno && $acerto_goles_dos);
+        $acerto_un_marcador = boolval($acerto_goles_uno || $acerto_goles_dos);
+
+        // Acertó en equipo ganador
+
+        $acerto_ganador_uno = boolval($res_e_uno > $res_e_dos && $pred_e_uno > $pred_e_dos);
+        $acerto_ganador_dos = boolval($res_e_dos > $res_e_uno && $pred_e_dos > $pred_e_uno);
+
+        $acerto_equipo_ganador = boolval($acerto_ganador_uno || $acerto_ganador_dos);
+
+        // Acertó empate
+
+        $resultado_empate = boolval($res_e_uno === $res_e_dos);
+        $prediccion_empate = boolval($pred_e_uno === $pred_e_dos);
+
+        $predijo_empate = boolval($resultado_empate && $prediccion_empate);
+
+        // Validaciones de predicción
+
+        if ($acerto_marcadores) return 5;
+
+        if ($acerto_equipo_ganador && $acerto_un_marcador) return 4; 
+
+        if ($acerto_equipo_ganador) return 2;
+
+        if ($predijo_empate) return 2;
+
+        if ($acerto_un_marcador) return 1;
+
+        return 0;
+    
+    }
+
+    public function getResultados(Collection $equipos_partidos, int $user_id)
+    {
+
+        $resultados = collect([]);
+
+        $equipos_partidos->each(function($equipos_partido) use($resultados, $user_id) {
+
+            $id_partido = $equipos_partido->partido->id;
+
+            // Buscamos si el usuario ya hizo una predicción
+
+            $prediccion = Preccion::select('id', 'partido_id', 'goles_equipo_1', 'goles_equipo_2')
+                ->where('partido_id', $id_partido)
+                ->where('user_id', $user_id)
+                ->first();
+
+            if ( empty($prediccion) ) {
+
+                // Si no existe la predicción colocamos valores por defecto
+
+                $equipos_partido->prediccion_equipo_1 = null;
+
+                $equipos_partido->prediccion_equipo_2 = null;
+
+                $equipos_partido->puntos = 0;
+
+                $equipos_partido->mensaje = 'No has realizado una predicción.';
+
+                $resultados->push($equipos_partido);
+
+                return;
+
+            }
+
+            $puntos = $this->getResultadoPrediccion($prediccion, $equipos_partido->resultado);
+
+            $equipos_partido->prediccion_equipo_1 = $prediccion->goles_equipo_1;
+
+            $equipos_partido->prediccion_equipo_2 = $prediccion->goles_equipo_2;
+
+            $equipos_partido->puntos = $puntos;
+
+            $equipos_partido->mensaje = "Ganaste: {$puntos} puntos";
+
+            $resultados->push($equipos_partido);
+
+        });
+
+        return $resultados;
 
     }
 }

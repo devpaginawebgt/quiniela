@@ -86,8 +86,9 @@ Route::middleware(['auth:sanctum'])->group(function() {
     // Premios
 
     Route::controller(ResultadoPartidoController::class)->group(function() {
-        Route::get('predicciones/{jornada}', 'getPredicciones');
         Route::post('predicciones', 'savePredicciones');
+        Route::get('predicciones/{jornada}', 'getPredicciones');
+        Route::get('predicciones/{jornada}/resultados', 'getResultados');
     });
 
 });

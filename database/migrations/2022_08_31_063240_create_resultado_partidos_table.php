@@ -18,7 +18,7 @@ class CreateResultadoPartidosTable extends Migration
             $table->unsignedBigInteger('partido_id')->unique();
             $table->integer('goles_equipo_1')->default(0);
             $table->integer('goles_equipo_2')->default(0);
-            $table->unsignedBigInteger('equipo_ganador_id');
+            $table->unsignedBigInteger('equipo_ganador_id')->nullable();
             $table->timestamps();
 
             $table->foreign('partido_id')->references('id')->on('partidos')
