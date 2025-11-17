@@ -49,6 +49,7 @@ Route::middleware(['auth:sanctum'])->group(function() {
     Route::controller(GrupoController::class)->group(function() {
         Route::get('grupos', 'getGrupos');
         Route::get('grupos/{grupo}/equipos', 'getEquiposGrupo');
+        Route::get('grupos/{grupo}/jornadas', 'getJornadasGrupo');
     });
 
     // Partidos

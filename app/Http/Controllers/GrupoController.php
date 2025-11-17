@@ -52,4 +52,27 @@ class GrupoController extends Controller
 
         return $this->successResponse($grupo);
     }
+
+    public function getJornadasGrupo(string $get_grupo)
+    {
+        $get_grupo = (int)$get_grupo;
+
+        if ( empty($get_grupo) ) {
+
+            return $this->errorResponse('No se encontró el grupo', 422);
+
+        }
+
+        $grupo = $this->grupoService->getGrupo($get_grupo);
+
+        if ( empty($grupo) ) {
+
+            return $this->errorResponse('No se encontró el grupo', 422);
+
+        }
+
+        $jornadas = $this->partidoService->getJornadasGrupo($get_grupo);
+
+        return $this->successResponse($jornadas);
+    }
 }

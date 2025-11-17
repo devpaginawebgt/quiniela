@@ -40,14 +40,16 @@ class PartidoService {
     {
 
         $partidos = EquipoPartido::select('id', 'equipo_1', 'equipo_2', 'partido_id')
+            ->has('equipoUno')
+            ->has('equipoDos')
+            ->whereHas('partido', function(Builder $query) use($jornada) {
+                $query->where('jornada', $jornada);
+            })
             ->with([
                 'partido:id,fase,jornada,fecha_partido,jugado,estado',
                 'equipoUno:id,nombre,imagen,grupo',
                 'equipoDos:id,nombre,imagen,grupo'
             ])
-            ->whereHas('partido', function(Builder $query) use($jornada) {
-                $query->where('jornada', $jornada);
-            })
             ->get();
 
         return $partidos;
@@ -58,7 +60,6 @@ class PartidoService {
     {
 
         $partidos = EquipoPartido::select('id', 'equipo_1', 'equipo_2', 'partido_id')
-            ->has('partido')
             ->has('equipoUno')
             ->has('equipoDos')
             ->whereHas('partido', function(Builder $query) use($jornada) {
@@ -83,7 +84,6 @@ class PartidoService {
         $partido_ids = $partido_ids->toArray();
 
         $partidos = EquipoPartido::select('id', 'equipo_1', 'equipo_2', 'partido_id')
-            ->has('partido')
             ->has('equipoUno')
             ->has('equipoDos')
             ->whereHas('partido', function(Builder $query) use($partido_ids) {
@@ -102,78 +102,40 @@ class PartidoService {
 
     }
 
-    public function getPartidosGrupo(string $grupo)
+    public function getJornadasGrupo(string $grupo)
     {
-        $partidosJornadas = [];
+        $jornadas = collect([1, 2, 3]);
+        
+        $partidosJornadas = collect([]);
 
-        // Jornada 1
+        $jornadas->each(function($jornada) use($grupo, $partidosJornadas) {
 
-        $jornadaUno = EquipoPartido::select('id', 'equipo_1', 'equipo_2', 'partido_id')
-            ->with([
-                'partido:id,fase,jornada,fecha_partido,jugado,estado',
-                'equipoUno:id,nombre,imagen,grupo',
-                'equipoDos:id,nombre,imagen,grupo'
-            ])
-            ->whereHas('partido', function(Builder $query) {
-                $query->where('jornada', 1);
-            })
-            ->whereHas('equipoUno', function(Builder $query) use($grupo) {
-                $query->where('grupo', $grupo);
-            })
-            ->whereHas('equipoDos', function(Builder $query) use($grupo) {
-                $query->where('grupo', $grupo);
-            })
-            ->get();
+            $jornada_ob = $this->getJornada($jornada);
 
-        $jornadaUno = PartidoResource::collection($jornadaUno);
+            $partidosJornada = EquipoPartido::select('id', 'equipo_1', 'equipo_2', 'partido_id')
+                ->whereHas('partido', function(Builder $query) use($jornada) {
+                    $query->where('jornada', $jornada);
+                })
+                ->whereHas('equipoUno', function(Builder $query) use($grupo) {
+                    $query->where('grupo', $grupo);
+                })
+                ->whereHas('equipoDos', function(Builder $query) use($grupo) {
+                    $query->where('grupo', $grupo);
+                })
+                ->with([
+                    'partido:id,fase,jornada,fecha_partido,jugado,estado',
+                    'equipoUno:id,nombre,imagen,grupo',
+                    'equipoDos:id,nombre,imagen,grupo'
+                ])
+                ->get();
 
-        $partidosJornadas['jornadaUno'] = $jornadaUno;
+            $partidosJornada = PartidoResource::collection($partidosJornada);
 
-        // Jornada 2
+            $jornada_ob['partidos'] = $partidosJornada;
 
-        $jornadaDos = EquipoPartido::select('id', 'equipo_1', 'equipo_2', 'partido_id')
-            ->with([
-                'partido:id,fase,jornada,fecha_partido,jugado,estado',
-                'equipoUno:id,nombre,imagen,grupo',
-                'equipoDos:id,nombre,imagen,grupo'
-            ])
-            ->whereHas('partido', function(Builder $query) {
-                $query->where('jornada', 2);
-            })
-            ->whereHas('equipoUno', function(Builder $query) use($grupo) {
-                $query->where('grupo', $grupo);
-            })
-            ->whereHas('equipoDos', function(Builder $query) use($grupo) {
-                $query->where('grupo', $grupo);
-            })
-            ->get();
+            $partidosJornadas->push($jornada_ob);
 
-        $jornadaDos = PartidoResource::collection($jornadaDos);
-
-        $partidosJornadas['jornadaDos'] = $jornadaDos;
-
-        // Jornada 3
-
-        $jornadaTres = EquipoPartido::select('id', 'equipo_1', 'equipo_2', 'partido_id')
-            ->with([
-                'partido:id,fase,jornada,fecha_partido,jugado,estado',
-                'equipoUno:id,nombre,imagen,grupo',
-                'equipoDos:id,nombre,imagen,grupo'
-            ])
-            ->whereHas('partido', function(Builder $query) {
-                $query->where('jornada', 3);
-            })
-            ->whereHas('equipoUno', function(Builder $query) use($grupo) {
-                $query->where('grupo', $grupo);
-            })
-            ->whereHas('equipoDos', function(Builder $query) use($grupo) {
-                $query->where('grupo', $grupo);
-            })
-            ->get();
-
-        $jornadaTres = PartidoResource::collection($jornadaTres);
-
-        $partidosJornadas['jornadaTres'] = $jornadaTres;
+        });
 
         return $partidosJornadas;
     }
