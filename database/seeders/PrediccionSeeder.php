@@ -26,18 +26,30 @@ class PrediccionSeeder extends Seeder
                 'goles_equipo_1' => 2,
                 'goles_equipo_2' => 2,
             ],
-            [
-                'user_id' => 2,
-                'partido_id' => 1,
-                'goles_equipo_1' => 3,
-                'goles_equipo_2' => 1,
-            ]
         ];
 
         foreach($predicciones as $prediccion) {
 
             Preccion::create($prediccion);
 
+        }
+
+        $predicciones_user_1 = 12;
+
+        for ($i = 0; $i < $predicciones_user_1; $i++) {
+            Preccion::factory()->create([
+                'user_id' => 1,
+                'partido_id' => $i + 3,
+            ]);
+        }
+
+        $predicciones_user_2 = 14;
+
+        for ($i = 0; $i < $predicciones_user_2; $i++) {
+            Preccion::factory()->create([
+                'user_id' => 2,
+                'partido_id' => $i + 1,
+            ]);
         }
     }
 }
