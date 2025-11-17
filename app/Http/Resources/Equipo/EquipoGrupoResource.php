@@ -17,18 +17,18 @@ class EquipoGrupoResource extends JsonResource
     {
         $stats = [];
 
-        $stats[] = ['PJ' => $this->partidos_jugados];
-        $stats[] = ['PG' => $this->partidos_ganados];
-        $stats[] = ['PE' => $this->partidos_empatados];
-        $stats[] = ['PP' => $this->partidos_perdidos];
-        $stats[] = ['GF' => $this->goles_favor];
-        $stats[] = ['GC' => $this->goles_contra];
-        $stats[] = ['Puntos' => $this->puntos];
+        $stats[] = [ 'name' => 'PJ', 'value' => $this->partidos_jugados];
+        $stats[] = [ 'name' => 'PG', 'value' => $this->partidos_ganados];
+        $stats[] = [ 'name' => 'PE', 'value' => $this->partidos_empatados];
+        $stats[] = [ 'name' => 'PP', 'value' => $this->partidos_perdidos];
+        $stats[] = [ 'name' => 'GF', 'value' => $this->goles_favor];
+        $stats[] = [ 'name' => 'GC', 'value' => $this->goles_contra];
 
         return [
             'id' => $this->id,
             'name' => $this->nombre,
             'image' => HelperService::ImagePath($this->imagen),
+            'puntos' => $this->puntos,
             'stats' => $stats,
         ];
     }
