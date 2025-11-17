@@ -14,7 +14,7 @@ class CodigoSeeder extends Seeder
      */
     public function run()
     {
-        Codigo::factory(1)->state(['estado' => 1])->create();
+        Codigo::factory(2)->state(['estado' => 1])->create();
 
         Codigo::factory(10)->create();
     }

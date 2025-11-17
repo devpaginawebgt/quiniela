@@ -67,7 +67,11 @@ class UserController extends Controller
 
         $participantes = $this->userService->getRanking($id_pais);
 
-        $participantes = UserRankingResource::collection($participantes);
+        $participantes = UserRankingResource::collection($participantes)
+            ->map(function($resource, $index) {
+                $resource->posicion = $index + 1;
+                return $resource;
+            });
 
         return $this->successResponse($participantes);
 
