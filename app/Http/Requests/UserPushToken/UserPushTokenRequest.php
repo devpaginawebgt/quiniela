@@ -29,5 +29,21 @@ class UserPushTokenRequest extends FormRequest
             'is_active' => ['boolean'],
         ];
     }
-    
+
+    public function messages()
+    {
+        return [
+            'device_token.required' => 'El token del dispositivo es obligatorio.',
+            'device_token.string' => 'El token del dispositivo debe ser texto válido.',
+            'device_token.min' => 'El token del dispositivo no puede estar vacío.',
+            'device_token.max' => 'El token del dispositivo excede el tamaño permitido.',
+
+            'device_platform.required' => 'Debe especificar el tipo de dispositivo.',
+            'device_platform.string' => 'El campo tipo de dispositivo debe ser texto.',
+            'device_platform.in' => 'El dispositivo debe ser Android o iOS.',
+
+            'is_active.boolean' => 'El valor del campo activo debe ser verdadero o falso.',
+        ];
+    }
+
 }
