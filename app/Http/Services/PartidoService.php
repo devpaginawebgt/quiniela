@@ -97,9 +97,9 @@ class PartidoService {
         
         $message = '';
 
-        $partido_ids_validos = collect([]);
+        $equipos_partidos_validos = collect([]);
 
-        $equipos_partidos->each(function($equipos_partido) use( &$error, &$message, &$partido_ids_validos ) {
+        $equipos_partidos->each(function($equipos_partido) use( &$error, &$message, &$equipos_partidos_validos ) {
 
             $estado = $equipos_partido->partido->estado;
 
@@ -149,15 +149,7 @@ class PartidoService {
 
             }
 
-            $partido_ids_validos->push($equipos_partido->partido_id);
-
-        });
-
-        $equipos_partidos = $equipos_partidos->filter(function($equipos_partido) use($partido_ids_validos) {
-
-            $id_partido = $equipos_partido->partido_id;
-
-            return $partido_ids_validos->contains($id_partido);
+            $equipos_partidos_validos->push($equipos_partido);
 
         });
 
