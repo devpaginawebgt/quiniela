@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Partido;
+namespace App\Http\Resources\Prediccion;
 
 use App\Http\Resources\Equipo\EquipoPartidoResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PartidoResource extends JsonResource
+class PrediccionSolicitudResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -34,11 +34,14 @@ class PartidoResource extends JsonResource
             'fechaPartido' => $this->partido->fecha_partido,
             'jugado' => $this->partido->jugado === 1,
             'idEstado' => $this->partido->estado,
-            'jornada' => $this->partido->jornada,
             'estado' => $estado,
 
             'equipoUno' => new EquipoPartidoResource($this->equipoUno),
             'equipoDos' => new EquipoPartidoResource($this->equipoDos),
+
+            'prediccionEquipoUno' => $this->prediccion_equipo_1,
+            'prediccionEquipoDos' => $this->prediccion_equipo_2,
+            'message' => $this->message,
         ];
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Resources\Partido\PartidoResource;
 use App\Models\Equipo;
 use App\Models\EquipoPartido;
 use App\Models\Partido;
+use App\Models\Preccion;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -78,7 +79,7 @@ class PartidoService {
 
     }
 
-    public function getPartidosPredicciones(Collection $predicciones)
+    public function getPartidosPredicciones(Collection $predicciones, int $user_id)
     {
 
         $partido_ids = $predicciones->map(function($prediccion) {
@@ -102,21 +103,42 @@ class PartidoService {
 
         // Iteramos para hacer verificación de partidos y separamos errores
 
-        $errors = collect([]);
+        $predicciones_rechazadas = collect([]);
 
-        $equipos_partidos_validos = collect([]);
+        $predicciones_permitidas = collect([]);
 
-        $equipos_partidos->each(function($equipos_partido) use( &$predicciones, &$errors, &$equipos_partidos_validos ) {
-
-            $prediccion_original = $predicciones->firstWhere('id_partido', $equipos_partido->id);
+        $equipos_partidos->each(function($equipos_partido) use( &$predicciones_rechazadas, &$predicciones_permitidas, &$user_id ) {
 
             $estado = $equipos_partido->partido->estado;
 
+            // Obtenemos la predicción anteiror del usuario
+
+            $prediccion = Preccion::select('id', 'partido_id', 'goles_equipo_1', 'goles_equipo_2')
+                ->where('partido_id', $equipos_partido->id)
+                ->where('user_id', $user_id)
+                ->first();
+
+            if ( empty($prediccion) ) {
+
+                // Si no existe la predicción colocamos valores por defecto
+
+                $equipos_partido->prediccion_equipo_1 = 0;
+
+                $equipos_partido->prediccion_equipo_2 = 0;                
+
+            } else {
+
+                $equipos_partido->prediccion_equipo_1 = $prediccion->goles_equipo_1;
+
+                $equipos_partido->prediccion_equipo_2 = $prediccion->goles_equipo_2;
+
+            }
+
             if ($estado === 1) {
 
-                $prediccion_original['message'] = 'No se puede guardar la predicción: el partido ha finalizado.';
+                $equipos_partido->message = 'No se puede guardar la predicción: el partido ha finalizado.';
 
-                $errors->push($prediccion_original);                
+                $predicciones_rechazadas->push($equipos_partido);
 
                 return;
 
@@ -124,9 +146,9 @@ class PartidoService {
 
             if ($estado === 2) {
 
-                $prediccion_original['message'] = 'No se puede guardar la predicción: ¡el partido está en juego!';
+                $equipos_partido->message = 'No se puede guardar la predicción: ¡el partido está en juego!';
 
-                $errors->push($prediccion_original);                
+                $predicciones_rechazadas->push($equipos_partido);
 
                 return;
 
@@ -138,9 +160,9 @@ class PartidoService {
 
             if ($fecha_actual->greaterThan($fecha_partido)) {
 
-                $prediccion_original['message'] = 'No se puede guardar la predicción: la fecha del partido ya ha pasado.';
+                $equipos_partido->message = 'No se puede guardar la predicción: la fecha del partido ya ha pasado.';
 
-                $errors->push($prediccion_original);                
+                $predicciones_rechazadas->push($equipos_partido);
 
                 return;
 
@@ -150,21 +172,23 @@ class PartidoService {
 
             if ($fecha_actual->greaterThan($fecha_limite)) {
 
-                $prediccion_original['message'] = 'No se puede guardar la predicción: el partido está por comenzar (menos de 10 minutos).';
+                $equipos_partido->message = 'No se puede guardar la predicción: el partido está por comenzar (menos de 10 minutos).';
 
-                $errors->push($prediccion_original);                                
+                $predicciones_rechazadas->push($equipos_partido);
 
                 return;
 
             }
 
-            $equipos_partidos_validos->push($equipos_partido);
+            $equipos_partido->message = 'Tu pronóstico ha sido guardado con éxito.';
+
+            $predicciones_permitidas->push($equipos_partido);
 
         });
 
         return [
-            'errors' => $errors,
-            'equipos_partidos' => $equipos_partidos_validos
+            'rechazadas' => $predicciones_rechazadas,
+            'permitidas' => $predicciones_permitidas
         ];
 
     }

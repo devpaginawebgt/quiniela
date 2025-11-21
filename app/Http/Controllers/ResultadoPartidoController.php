@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Prediccion\PrediccionRequest;
 use App\Http\Resources\Prediccion\PrediccionResource;
+use App\Http\Resources\Prediccion\PrediccionSolicitudResource;
 use App\Http\Resources\Resultado\ResultadoResource;
 use DateTime;
 use Illuminate\Http\Request;
@@ -106,24 +107,24 @@ class ResultadoPartidoController extends Controller
 
         // Obtener los partidos disponibles a predecir
 
-        $resultado = $this->partidoService->getPartidosPredicciones($predicciones);
+        $info_predicciones = $this->partidoService->getPartidosPredicciones($predicciones, $user_id);
 
-        $errors = $resultado['errors'];
+        $predicciones_rechazadas = PrediccionSolicitudResource::collection($info_predicciones['rechazadas']);
 
-        $equipos_partidos = $resultado['equipos_partidos'];
+        $predicciones_permitidas = $info_predicciones['permitidas'];
 
-        if ( $equipos_partidos->isEmpty() ) {
+        if ( $predicciones_permitidas->isEmpty() ) {
 
             return $this->successResponse([
-                'errores' => $errors, 
-                'predicciones' => []
+                'prediccionesRechazadas' => $predicciones_rechazadas,
+                'prediccionesProcesadas' => []
             ]);
 
         }
 
-        $predicciones = $predicciones->filter(function($prediccion) use($equipos_partidos) {
+        $predicciones = $predicciones->filter(function($prediccion) use($predicciones_permitidas) {
             
-            $partido = $equipos_partidos->firstWhere('partido_id', $prediccion['id_partido']);
+            $partido = $predicciones_permitidas->firstWhere('partido_id', $prediccion['id_partido']);
 
             return !empty($partido);
 
@@ -133,13 +134,13 @@ class ResultadoPartidoController extends Controller
 
         $this->prediccionService->savePredicciones($predicciones, $user_id);
 
-        $predicciones = $this->prediccionService->getPredicciones($equipos_partidos, $user_id);
+        $predicciones_procesadas = $this->prediccionService->getPredicciones($predicciones_permitidas, $user_id);
 
-        $predicciones = PrediccionResource::collection($predicciones);
+        $predicciones_procesadas = PrediccionSolicitudResource::collection($predicciones_procesadas);
 
         return $this->successResponse([
-            'errores' => $errors, 
-            'predicciones' => $predicciones
+            'prediccionesRechazadas' => $predicciones_rechazadas,
+            'prediccionesProcesadas' => $predicciones_procesadas
         ]);
 
     }
