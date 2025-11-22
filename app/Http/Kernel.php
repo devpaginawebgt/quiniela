@@ -42,6 +42,7 @@ class Kernel extends HttpKernel
             'throttle:api',
             \App\Http\Middleware\RequestToSnakeCase::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\NoCacheHeaders::class,
         ],
     ];
 
