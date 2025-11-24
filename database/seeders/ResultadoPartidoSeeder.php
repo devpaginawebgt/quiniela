@@ -86,18 +86,18 @@ class ResultadoPartidoSeeder extends Seeder
                 'goles_equipo_2' => 0,
                 'equipo_ganador_id' => 21,
             ],
-            [
-                'partido_id' => 13,
-                'goles_equipo_1' => 2,
-                'goles_equipo_2' => 4,
-                'equipo_ganador_id' => 28,
-            ],
-            [
-                'partido_id' => 14,
-                'goles_equipo_1' => 3,
-                'goles_equipo_2' => 1,
-                'equipo_ganador_id' => 31,
-            ],
+            // [
+            //     'partido_id' => 13,
+            //     'goles_equipo_1' => 2,
+            //     'goles_equipo_2' => 4,
+            //     'equipo_ganador_id' => 28,
+            // ],
+            // [
+            //     'partido_id' => 14,
+            //     'goles_equipo_1' => 3,
+            //     'goles_equipo_2' => 1,
+            //     'equipo_ganador_id' => 31,
+            // ],
         ];
 
         foreach($resultados as $resultado) {

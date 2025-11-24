@@ -41,15 +41,27 @@ class PrediccionSeeder extends Seeder
                 'user_id' => 1,
                 'partido_id' => $i + 3,
             ]);
-        }
+        }        
 
-        $predicciones_user_2 = 14;
+        $predicciones_revisor = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13];
 
-        for ($i = 0; $i < $predicciones_user_2; $i++) {
+        foreach($predicciones_revisor as $id_partido) {
+
             Preccion::factory()->create([
                 'user_id' => 2,
-                'partido_id' => $i + 1,
+                'partido_id' => $id_partido,
             ]);
+
+            Preccion::factory()->create([
+                'user_id' => 3,
+                'partido_id' => $id_partido,
+            ]);
+
+            Preccion::factory()->create([
+                'user_id' => 4,
+                'partido_id' => $id_partido,
+            ]);
+
         }
     }
 }
