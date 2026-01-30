@@ -1,8 +1,15 @@
 <?php
 
+use App\Http\Controllers\Auth\ApiAuthController;
+use App\Http\Controllers\EquipoController;
+use App\Http\Controllers\EstadioController;
+use App\Http\Controllers\GrupoController;
+use App\Http\Controllers\PartidoController;
+use App\Http\Controllers\PremioController;
 use App\Http\Controllers\SeleccionController;
 use App\Http\Controllers\ResultadoPartidoController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserPushTokenController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,20 +23,73 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Auth
+
+Route::middleware('api.key')->controller(ApiAuthController::class)->group(function() {
+    Route::post('login', 'login');
 });
 
-//Los metodos post se cambiaron a put porque el servidor donde se alojara la aplicacion no permite post
-Route::get('/ver-grupo/{grupo_get}', [SeleccionController::class, 'equiposGrupo'] );
-Route::put('/partidos-grupo', [SeleccionController::class, 'partidosGrupo'] );
-Route::get('/partidos-jornada/{jornada}', [SeleccionController::class, 'partidosJornada'] );
+// Rutas protegidas
 
+Route::middleware(['auth:sanctum'])->group(function() {
 
-Route::put('/guardar-predicciones/', [ResultadoPartidoController::class, 'guardarPredicciones'] );
+    Route::controller(ApiAuthController::class)->group(function() {
+        Route::delete('logout', 'logout');
+        Route::delete('logout-all', 'logoutAll');
+    });
 
+    // Equipos
 
-Route::put('/obtener-predicciones/', [ResultadoPartidoController::class, 'obtenerPrediccionesGuardadas'] );
-Route::get('/test/{user_id}', [ResultadoPartidoController::class, 'testPerformance'] );
+    Route::controller(EquipoController::class)->group(function() {
+        Route::get('equipos', 'getEquipos');
+    });
 
-Route::get('/obtener-tabla-participantes/{user_id}', [ResultadoPartidoController::class, 'obtenerParticipantes'] );
+    // Grupos
+
+    Route::controller(GrupoController::class)->group(function() {
+        Route::get('grupos', 'getGrupos');
+        Route::get('grupos/{grupo}/equipos', 'getEquiposGrupo');
+        Route::get('grupos/{grupo}/jornadas', 'getJornadasGrupo');
+    });
+
+    // Partidos
+
+    Route::controller(PartidoController::class)->group(function() {
+        Route::get('jornadas', 'getJornadas');
+        Route::get('jornadas/{jornada}/partidos', 'getPartidosJornada');
+    });
+
+    // Estadios
+
+    Route::controller(EstadioController::class)->group(function() {
+        Route::get('estadios', 'getEstadios');
+    });
+
+    // Users
+
+    Route::controller(UserController::class)->group(function() {
+        Route::get('users', 'getUsers');
+        Route::get('user', 'getUser');
+        Route::get('ranking', 'getRanking');
+    });
+
+    Route::controller(UserPushTokenController::class)->group(function() {
+        Route::post('users/push-tokens', 'store');
+    });
+
+    // Premios
+
+    Route::controller(PremioController::class)->group(function() {
+        Route::get('premios', 'getPremios');
+    });
+
+    // Premios
+
+    Route::controller(ResultadoPartidoController::class)->group(function() {
+        Route::post('predicciones', 'savePredicciones');
+        Route::get('predicciones/{jornada}', 'getPredicciones');
+        Route::get('predicciones/{jornada}/resultados', 'getResultados');
+    });
+
+});
+

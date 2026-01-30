@@ -16,7 +16,7 @@ class CreatePartidosTable extends Migration
         Schema::create('partidos', function (Blueprint $table) {
             $table->id();
             $table->string('fase')->nullable();
-            $table->string('jornada');
+            $table->integer('jornada');
             $table->dateTime('fecha_partido');
             $table->unsignedBigInteger('estadio_id');
             $table->integer('jugado')->default(0);

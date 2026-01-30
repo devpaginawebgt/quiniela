@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,13 @@ use Illuminate\Support\Facades\Artisan;
 |
 */
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+// Artisan::command('inspire', function () {
+//     $this->comment(Inspiring::quote());
+// })->purpose('Display an inspiring quote');
+
+
+// Delete expired Sanctum API Tokens
+
+Schedule::command('sanctum:prune-expired --hours=24')->daily();
+
+Schedule::command('partidos:actualizar-pasados')->dailyAt('23:55');

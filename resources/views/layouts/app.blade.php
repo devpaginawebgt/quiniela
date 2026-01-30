@@ -10,17 +10,23 @@
         <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
         <meta http-equiv="Pragma" content="no-cache">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'Quiniela') }}</title>
 
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 
         <!-- Scripts -->
-        {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+        @vite([
+            'resources/css/app.css', 
+            'resources/css/styles.css', 
+            'resources/js/app.js',
+            'resources/js/functions-views.js',
+            'resources/js/functions.js'
+        ])
 
-        <link rel="stylesheet" href="{{asset('css/app.css')}}">
+        {{-- <link rel="stylesheet" href="{{asset('css/app.css')}}">
         <link rel="stylesheet" href="{{asset('css/styles.css')}}">
-        <script src="{{asset('js/app.js')}}"></script>
+        <script src="{{asset('js/app.js')}}"></script> --}}
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
@@ -38,7 +44,5 @@
                 {{ $slot }}
             </main>
         </div>
-    <script src="{{asset('js/functions-views.js')}}"></script>
-    <script src="{{asset('js/functions.js')}}"></script>
     </body>
 </html>

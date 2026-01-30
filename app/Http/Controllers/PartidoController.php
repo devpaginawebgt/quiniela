@@ -2,25 +2,56 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Partido\PartidoResource;
+use App\Http\Services\EquipoService;
+use App\Http\Services\PartidoService;
 use App\Models\User;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
 class PartidoController extends Controller
 {
-    public function verParticipantes(){
+    use ApiResponse;
+    
+    public function __construct(
+        private readonly PartidoService $partidoService,
+        private readonly EquipoService $equipoService
+    ) {}
 
-        $participantes = User::where('status_user', 1)->get();
-        
-        $paises = ['Guatemala','El Salvador','Honduras','Nicaragua','Costa Rica'];
+    public function getJornadas() 
+    {
 
-        foreach ($participantes as $participante) {
+        $jornadas = $this->partidoService->getJornadas();
 
-            $index_pais = $participante->pais_id - 1;
+        return $this->successResponse($jornadas);
 
-            $participante->pais = $paises[$index_pais];
+    }
+
+    public function getPartidosJornada(Request $request, string $get_jornada)
+    {
+    
+        $get_jornada = (int)$get_jornada;
+
+        if ( empty($get_jornada) ) {
+
+            return $this->errorResponse('No se encontró la jornada', 422);
 
         }
 
-        return view('modulos.participantes',['participantes' => $participantes]);
+        $jornada = $this->partidoService->getJornada($get_jornada);
+
+        if ( empty($jornada) ) {
+
+            return $this->errorResponse('No se encontró la jornada', 422);
+
+        }
+
+        $partidos = $this->partidoService->getPartidosJornada($get_jornada);
+
+        $partidos = PartidoResource::collection($partidos);
+
+        return $this->successResponse($partidos);
+
     }
+
 }

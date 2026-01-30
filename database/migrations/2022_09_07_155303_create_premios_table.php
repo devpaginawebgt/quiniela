@@ -15,10 +15,11 @@ class CreatePremiosTable extends Migration
     {
         Schema::create('premios', function (Blueprint $table) {
             $table->id();
+            $table->integer('posicion')->nullable();
+            $table->string('titulo_posicion');
             $table->string('nombre');
             $table->string('imagen');
             $table->string('descripcion')->nullable();
-            $table->string('posicion')->nullable();
             $table->integer('pais_id');
             $table->timestamps();
         });

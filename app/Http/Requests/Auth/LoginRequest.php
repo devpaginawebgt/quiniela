@@ -29,9 +29,24 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'email' => ['required', 'string', 'email', 'exists:users,email'],
             'password' => ['required', 'string'],
         ];
+    }
+
+    public function messages()
+    {
+        
+        return [
+            'email.required' => 'Por favor llene el campo correo electrónico.',
+            'email.string' => 'El correo electrónico debe contener texto.',
+            'email.email' => 'Por favor ingrese un correo electrónico válido.',
+            'email.exists' => 'No encontramos un usuario con esta dirección de correo electrónico.',
+
+            'password.required' => 'Por favor llene el campo contraseña.',
+            'password.string' => 'La contraseña debe contener texto.',
+        ];
+        
     }
 
     /**
