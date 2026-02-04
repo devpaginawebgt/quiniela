@@ -44,9 +44,11 @@ class PremioController extends Controller
     public function getPremios(Request $request)
     {
 
-        $id_pais = $request->input('pais') ?? 1;
+        $user = $request->user();
 
-        $pais = $this->userService->getPais($id_pais);
+        $id_pais = $user->pais_id;
+
+        $pais = $this->userService->getPais($id_pais);  
 
         if ( empty($pais) ) {
 
