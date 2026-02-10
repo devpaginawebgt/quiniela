@@ -60,7 +60,8 @@ class UserService {
 
     public function getRanking($id_pais)
     {
-        $participantes = User::where('status_user', 1)
+        $participantes = User::has('predictions')
+            ->where('status_user', 1)
             ->where('pais_id', $id_pais)
             ->orderBy('puntos', 'desc')
             ->orderBy('name', 'asc')

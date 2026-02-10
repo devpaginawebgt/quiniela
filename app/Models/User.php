@@ -64,4 +64,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserPushToken::class);
     }
+
+    public function predictions(): HasMany
+    {
+        return $this->hasMany(Preccion::class);
+    }
 }
