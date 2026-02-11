@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\Equipo\EquipoGrupoResource;
+use App\Http\Resources\Jornada\JornadaGrupoResource;
 use App\Http\Services\EquipoService;
 use App\Http\Services\GrupoService;
 use App\Http\Services\PartidoService;
@@ -72,6 +73,8 @@ class GrupoController extends Controller
         }
 
         $jornadas = $this->partidoService->getJornadasGrupo($get_grupo);
+
+        $jornadas = JornadaGrupoResource::collection($jornadas);
 
         return $this->successResponse($jornadas);
     }
