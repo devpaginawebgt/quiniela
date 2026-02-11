@@ -17,10 +17,10 @@ class CreatePartidosTable extends Migration
             $table->id();
             $table->string('fase')->nullable();
             $table->unsignedBigInteger('jornada_id');
-            $table->dateTime('fecha_partido');
+            $table->dateTime('fecha_partido')->index();
             $table->unsignedBigInteger('estadio_id');
             $table->integer('jugado')->default(0);
-            $table->integer('estado')->default(0);
+            $table->integer('estado')->index()->default(0);
             $table->timestamps();
 
             $table->foreign('estadio_id')
