@@ -20,7 +20,7 @@ class Partido extends Model
        'estado',
     ];
 
-    public function casts(): array
+    protected function casts(): array
     {
         return [ 'fecha_partido' => 'datetime' ];
     }
