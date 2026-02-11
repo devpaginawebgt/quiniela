@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('apellidos');
             $table->string('numero_documento');
             $table->string('telefono');
-            $table->integer('pais_id');
+            $table->unsignedBigInteger('pais_id');
             $table->string('email')->unique();
             $table->integer('puntos')->default(0);
             $table->unsignedBigInteger('codigo_id');
@@ -30,7 +30,17 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
 
-            $table->foreign('codigo_id')->references('id')->on('codigos')->onUpdate('cascade');
+            $table->foreign('codigo_id')
+                ->references('id')
+                ->on('codigos')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');
+                
+            $table->foreign('pais_id')
+                ->references('id')
+                ->on('countries')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');
         });
     }
 
