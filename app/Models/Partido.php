@@ -13,7 +13,7 @@ class Partido extends Model
 
     protected $fillable = [
        'fase',
-       'jornada',
+       'jornada_id',
        'fecha_partido',
        'estadio_id',
        'jugado',
