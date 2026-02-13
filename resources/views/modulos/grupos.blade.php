@@ -16,7 +16,7 @@
                             <select
                                 id="grupos"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-lg font-semibold text-center cursor-pointer rounded-lg focus:ring-red-800 focus:border-red-800 block w-1/2 p-2.5"
-                                onchange="verEquiposGrupo(this)"
+                                {{-- onchange="verEquiposGrupo(this)" --}}
                             >
                                 @foreach($grupos as $grupo)
 
@@ -210,7 +210,7 @@
 
                                     @php
                                         $fecha_utc = $equipos_partido->partido->fecha_partido;
-                                        $timezone = auth()->user()->country->timezone;
+                                        $timezone = auth()->user()->country->timezone ?? 'GMT-6';
 
                                         $fecha_local = $fecha_utc->copy()->timezone($timezone);
 

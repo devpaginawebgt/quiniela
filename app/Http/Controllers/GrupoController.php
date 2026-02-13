@@ -108,9 +108,10 @@ class GrupoController extends Controller
 
         return view('modulos.grupos', [
             'grupos' => $grupos,
+            'equipos_grupo' => $equipos_grupo,
             'jornada_uno' => $jornada_uno,
             'jornada_dos' => $jornada_dos,
-            'jornada_tres' => $jornada_tres,
+            'jornada_tres' => $jornada_tres
         ]);
 
     }

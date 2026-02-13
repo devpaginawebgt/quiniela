@@ -1,112 +1,34 @@
 const getEquiposGrupo = async (grupo) => {
 
-    let datos = await axios.get(`/ver-grupo/${grupo}`)
-        .then(data => data.data)
+    let datos = await axios.get(`/grupos/${grupo}/equipos`)
+        .then(response => response.data.data)
         .catch(console.error);
 
     return datos;
 
 }
 
+const verEquiposGrupo = async (idGrupo) => {
 
-
-const getPartidosGruposJornadas = async (grupo, jornada) => {
-
-    const body = { 'grupo': grupo, 'jornada': jornada };
-
-    let datos = await axios.post('/partidos-grupo/', body)
-        .then(data => data.data)
-        .catch(console.error);
-
-    return datos;
-
-}
-
-
-
-document.addEventListener('DOMContentLoaded', async () => {
-
-    try {
-
-        let equipos = await getEquiposGrupo(1);
-
-        pintarTablaEquipos(equipos);
-
-
-
-        pintarJornadas(1);
-
-    } catch (error) {
-
-        console.error(error);
-
-    }
-
-
-
-    try {
-
-        let equiposJornada = await getPartidosJornadaGeneral(1);
-
-        pintarPartidosJornadaGeneral(equiposJornada);
-
-    } catch (error) {
-
-        console.error(error);
-
-    }
-
-
-
-    try {
-
-        let participantes = await obtenerUsuariosParticipantes();
-
-        pintarParticipantes(participantes);   
-
-    } catch (error) {
-
-        console.error(error);
-
-    }
-
-
-    const spinnerLoad = document.querySelector(".spinner-load");
-
-    if (spinnerLoad) {
-        spinnerLoad.classList.toggle('hidden');
-    }
-
-});
-
-
-
-const verEquiposGrupo = async (element) => {
-
-    const spinnerLoad = document.querySelector(".spinner-load");
+    // const spinnerLoad = document.querySelector(".spinner-load");
     
-    if (spinnerLoad) {
-        spinnerLoad.classList.toggle('hidden');
-    }
+    // if (spinnerLoad) {
+    //     spinnerLoad.classList.toggle('hidden');
+    // }
 
-    let equipos = await getEquiposGrupo(element.value);
+    const grupo = await getEquiposGrupo(idGrupo);
+
+    const equipos = grupo.equipos;
 
     pintarTablaEquipos(equipos);
 
+    pintarJornadas(idGrupo);
 
-
-    pintarJornadas(element.value);
-
-    if (spinnerLoad) {
-        spinnerLoad.classList.toggle('hidden');
-    }
+    // if (spinnerLoad) {
+    //     spinnerLoad.classList.toggle('hidden');
+    // }
 
 }
-
-window.verEquiposGrupo = verEquiposGrupo;
-
-
-
 
 const pintarJornadas = async (grupo) => {
 
@@ -125,88 +47,6 @@ const pintarJornadas = async (grupo) => {
     let partidosJornada3 = await getPartidosGruposJornadas(grupo, 3);
 
     pintarPartidosJornada(partidosJornada3, 3);
-
-}
-
-
-
-
-
-
-
-const pintarTablaEquipos = (equipos) => {
-
-    let tablaEquipos = document.querySelector('#body-equipos-grupo');
-
-    let rowEquipos = [];
-
-
-
-    equipos.forEach(element => {
-
-        let row = `<tr class="bg-white border-b">
-
-        <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap flex items-center justify-between">
-
-            <img src="${element.imagen}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
-
-            ${element.nombre}
-
-        </th>
-
-        <td class="py-4 px-6">
-
-            ${element.partidos_jugados}
-
-        </td>
-
-        <td class="py-4 px-6">
-
-            ${element.partidos_ganados}
-
-        </td>
-
-        <td class="py-4 px-6">
-
-            ${element.partidos_empatados}
-
-        </td>
-
-        <td class="py-4 px-6">
-
-            ${element.partidos_perdidos}
-
-        </td>
-
-        <td class="py-4 px-6">
-
-            ${element.goles_favor}
-
-        </td>
-
-        <td class="py-4 px-6">
-
-            ${element.goles_contra}
-
-        </td>
-
-        <td class="py-4 px-6">
-
-            ${element.puntos}
-
-        </td>
-
-    </tr>`;
-
-
-
-        rowEquipos.push(row);
-
-    });
-
-
-
-    tablaEquipos.innerHTML = rowEquipos;
 
 }
 
@@ -279,6 +119,138 @@ const pintarPartidosJornada = (equipos, jornadaAPintar) => {
 
 }
 
+const pintarTablaEquipos = (equipos) => {
+
+    let tablaEquipos = document.querySelector('#body-equipos-grupo');
+
+    let rowEquipos = [];
+
+    equipos.forEach(equipo => {
+
+        const pj = equipo.stats.find(stat => stat.name === 'PJ');
+        const pg = equipo.stats.find(stat => stat.name === 'PG');
+        const pe = equipo.stats.find(stat => stat.name === 'PE');
+        const pp = equipo.stats.find(stat => stat.name === 'PP');
+        const gf = equipo.stats.find(stat => stat.name === 'GF');
+        const gc = equipo.stats.find(stat => stat.name === 'GC');
+
+        let row = `
+            <tr class="bg-white border-b">
+                <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap flex items-center justify-between">
+                    <img src="${equipo.image}" alt="SELECCION" class="h-10 w-14 mx-4 border rounded-md shadow-md">
+                    ${equipo.name}
+                </th>
+                <td class="py-4 px-6">${pj.value}</td>
+                <td class="py-4 px-6">${pg.value}</td>
+                <td class="py-4 px-6">${pe.value}</td>
+                <td class="py-4 px-6">${pp.value}</td>
+                <td class="py-4 px-6">${gf.value}</td>
+                <td class="py-4 px-6">${gc.value}</td>
+                <td class="py-4 px-6">${equipo.puntos}</td>
+            </tr>
+        `;
+
+        rowEquipos.push(row);
+    });
+
+    tablaEquipos.innerHTML = rowEquipos;
+
+}
+
+
+window.verEquiposGrupo = verEquiposGrupo;
+
+
+
+const getPartidosGruposJornadas = async (grupo, jornada) => {
+
+    const body = { 'grupo': grupo, 'jornada': jornada };
+
+    let datos = await axios.post('/partidos-grupo/', body)
+        .then(data => data.data)
+        .catch(console.error);
+
+    return datos;
+
+}
+
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+
+    // Select de grupos
+
+    const inputGrupo = document.getElementById('grupos');
+
+    if (inputGrupo) {
+
+        inputGrupo.addEventListener('change', function(e) {
+
+            const idGrupo = inputGrupo.value;
+
+            if (!idGrupo) return;
+
+            verEquiposGrupo(idGrupo);
+
+        })
+
+    }
+
+
+    // Otras funciones
+
+    // try {
+
+    //     let equipos = await getEquiposGrupo(1);
+
+    //     pintarTablaEquipos(equipos);
+
+
+
+    //     pintarJornadas(1);
+
+    // } catch (error) {
+
+    //     console.error(error);
+
+    // }
+
+
+
+    // try {
+
+    //     let equiposJornada = await getPartidosJornadaGeneral(1);
+
+    //     pintarPartidosJornadaGeneral(equiposJornada);
+
+    // } catch (error) {
+
+    //     console.error(error);
+
+    // }
+
+
+
+    // try {
+
+    //     let participantes = await obtenerUsuariosParticipantes();
+
+    //     pintarParticipantes(participantes);   
+
+    // } catch (error) {
+
+    //     console.error(error);
+
+    // }
+
+
+    // const spinnerLoad = document.querySelector(".spinner-load");
+
+    // if (spinnerLoad) {
+    //     spinnerLoad.classList.toggle('hidden');
+    // }
+
+});
 
 
 /**************JORNADA SELECT */
