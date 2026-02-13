@@ -14,11 +14,11 @@
                     <div class="max-w-sm bg-white transform ease-in duration-150 hover:scale-105">
                         <div class="flex">
                             <img class="rounded-lg mx-auto hover:cursor-pointer btn-bandera border-2 border-gray-100 w-56 h-32"
-                                src="{{ asset( $equipo->imagen ) }}" alt="{{$equipo->nombre}}" id="{{str_replace(' ', '', $equipo->nombre)}}" onclick="slideToggle(this.id)"/>
+                                src="{{ asset( $equipo->imagen ) }}" alt="{{$equipo->nombre}}" id="{{str_replace(' ', '', $equipo->id)}}" onclick="slideToggle(this.id)"/>
                         </div>
                         <div class="p-2">
                             <h5 class="mb-2 text-center text-2xl font-bold tracking-tight text-gray-900">{{$equipo->nombre}}</h5>
-                            <div class="container-{{str_replace(' ', '', $equipo->nombre)}} hidden rounded-lg shadow-lg p-3">
+                            <div class="container-{{str_replace(' ', '', $equipo->id)}} hidden rounded-lg shadow-lg p-3">
                                 <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 text-center">{{$equipo->descripcion}}</p>
                             </div>
                         </div>

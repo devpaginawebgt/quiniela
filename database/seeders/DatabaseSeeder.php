@@ -13,7 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
         $this->call([
             CodigoSeeder::class,
             CountrySeeder::class,
@@ -25,7 +24,7 @@ class DatabaseSeeder extends Seeder
             EquipoPartidoSeeder::class,
             ResultadoPartidoSeeder::class,
             PremioSeeder::class,
-            PrediccionSeeder::class
+            // PrediccionSeeder::class
         ]);
     }
 }

@@ -16,8 +16,9 @@ class CreateEquiposTable extends Migration
         Schema::create('equipos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
+            $table->string('codigo_iso');
             $table->string('imagen');
-            $table->string('descripcion',1000)->nullable();
+            $table->text('descripcion')->nullable();
             $table->integer('grupo')->index();
             $table->integer('goles_favor')->default(0);
             $table->integer('goles_contra')->default(0);
