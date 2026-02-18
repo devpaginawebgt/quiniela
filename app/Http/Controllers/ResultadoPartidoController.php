@@ -181,22 +181,35 @@ class ResultadoPartidoController extends Controller
 
     }
 
-    public function verQuiniela($jornada = 1, $message = '0OK')
+    public function verQuiniela($jornada = null, $message = '0OK')
     {
+        $jornada = (int)$jornada;
+
         // Actualizar información general
 
         $user_id = Auth::user()->id;
 
         $this->actualizacionDataGeneral($user_id);
 
+        // Obtenemos la información de la jornada a obtener
+
+        $jornadas = $this->partidoService->getJornadas();
+
+        $jornada_activa = $jornadas->firstWhere(function($jornada) {
+            return $jornada->is_current === true;
+        });
+
+        $jornada_filtrada = empty($jornada) ? $jornada_activa->id : $jornada;
+
         // Obtener información de las predicciones realizadas por el usuario
         
-        $partidosJornada = $this->prediccionService->prediccionesParticipante($jornada, $user_id);
+        $partidosJornada = $this->prediccionService->prediccionesParticipante($jornada_filtrada, $user_id);
 
         return view('modulos.quiniela', [
+            'jornadas' => $jornadas,
             'partidosJornada' => $partidosJornada, 
+            'jornada_activa' => $jornada_filtrada,
             'message' => $message ?? '', 
-            'jornada' => $jornada
         ]);
 
     }

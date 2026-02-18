@@ -9,7 +9,6 @@ use App\Http\Services\PartidoService;
 use App\Models\Equipo;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class EquipoController extends Controller
 {
@@ -42,26 +41,6 @@ class EquipoController extends Controller
         return view('modulos.selecciones', [
             'equipos' => $equipos
         ]);
-
-    }
-
-    public function partidosJornada($jornada)
-    {
-
-        $partidosJornada = DB::select(
-            "SELECT 
-                * 
-            FROM 
-                equipo_partidos epar
-            INNER JOIN 
-                equipos e ON epar.equipo_1 = e.id OR epar.equipo_2 = e.id
-            INNER JOIN 
-                partidos par ON epar.partido_id = par.id
-            WHERE 
-                par.jornada = {$jornada}"
-        );
-
-        return json_encode($partidosJornada);
 
     }
 }

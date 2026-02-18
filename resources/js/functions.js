@@ -145,8 +145,6 @@ const pintarPartidosGrupo = (jornada) => {
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    toggleLoader()
-
     // Select de grupos
 
     const inputGrupo = document.getElementById('grupos');
@@ -165,24 +163,37 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     }
 
-    // try {
+    const inputCalendario = document.getElementById('calendario');
 
-    //     let participantes = await obtenerUsuariosParticipantes();
+    if (inputCalendario) {
 
-    //     pintarParticipantes(participantes);   
+        verPartidosJornada(inputCalendario);
 
-    // } catch (error) {
+        // inputCalendario.addEventListener('change', function(e) {
 
-    //     console.error(error);
+        //     const idGrupo = inputGrupo.value;
 
-    // }
+        //     if (!idGrupo) return;
 
+        //     verEquiposGrupo(idGrupo);
 
-    // const spinnerLoad = document.querySelector(".spinner-load");
+        // })
 
-    // if (spinnerLoad) {
-    //     spinnerLoad.classList.toggle('hidden');
-    // }
+    }
+
+    try {
+
+        let participantes = await obtenerUsuariosParticipantes();
+
+        pintarParticipantes(participantes);   
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+    toggleLoader()
 
 });
 
@@ -193,7 +204,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 const getPartidosJornadaGeneral = async (jornada) => {
 
-    let datos = await axios.get(`/partidos-jornada/${jornada}`)
+    let datos = await axios.get(`/jornadas/partidos-jornada/${jornada}`)
         .then(data => data.data)
         .catch(console.error);
 

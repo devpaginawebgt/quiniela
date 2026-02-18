@@ -16,9 +16,16 @@
                         <select
                             id="jornadas"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            {{-- onchange="verPartidosJornada(this)" --}}
+                            onchange="verPartidosJornada(this)"
                         >
-                            <option value="1">1</option>
+                            @foreach($jornadas as $jornada)
+
+                                <option value="{{ $jornada->id }}" {{ $jornada->is_current === true ? 'selected' : ''; }}>
+                                    {{ $jornada->name }}
+                                </option>
+
+                            @endforeach
+                            {{-- <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
                             <option value="4">Dieciseisavos de final</option>
@@ -26,7 +33,7 @@
                             <option value="6">Cuartos de final</option>
                             <option value="7">Semifinales</option>
                             <option value="8">Tercer lugar</option>
-                            <option value="9">Final</option>
+                            <option value="9">Final</option> --}}
                         </select>
                     </div>
 

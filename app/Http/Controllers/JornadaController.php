@@ -8,6 +8,7 @@ use App\Http\Services\EquipoService;
 use App\Http\Services\PartidoService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class JornadaController extends Controller
 {
@@ -58,7 +59,29 @@ class JornadaController extends Controller
 
     public function jornadasWeb() {
 
-        return view('modulos.calendario');
+        $jornadas = $this->partidoService->getJornadas();
+
+        return view('modulos.calendario', [ 'jornadas' => $jornadas ]);
+
+    }
+
+    public function partidosJornada($jornada)
+    {
+
+        $partidosJornada = DB::select(
+            "SELECT 
+                * 
+            FROM 
+                equipo_partidos epar
+            INNER JOIN 
+                equipos e ON epar.equipo_1 = e.id OR epar.equipo_2 = e.id
+            INNER JOIN 
+                partidos par ON epar.partido_id = par.id
+            WHERE 
+                par.jornada_id = {$jornada}"
+        );
+
+        return json_encode($partidosJornada);
 
     }
 }
